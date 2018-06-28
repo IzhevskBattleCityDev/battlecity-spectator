@@ -1,8 +1,8 @@
 /**
  * Created by Denis_Pankratov on 2/24/2018.
  */
-import Players from '@/components/classes/players.js'
-import BoardsConnector from '@/components/classes/boardsConnector.js'
+import Players from '@/classes/players.js'
+import BoardsConnector from '@/classes/boardsConnector.js'
 
 export default class Board {
   game = null
@@ -20,27 +20,21 @@ export default class Board {
     this.game = game
 
     this.connection = new BoardsConnector(this.game.WSLink, this.playerName)
+
     this.connection.run(this.onOpen, this.onMessage)
     this.players = new Players(this.game)
 
-    this.game.$http.get('/board/game/' + this.game.name).then((info) => {
-      this.link = info.request.responseURL
-      this.playerName = this.link.substring(this.link.indexOf('/board/player') + 14)
-    })
     this.game.$http.get('/rest/game/' + this.game.name + '/type').then((playerGameInfo) => {
       this.singleBoardGame = playerGameInfo.data.singleBoard
       this.boardSize = playerGameInfo.data.boardSize
+    }).then(() => {
+      this.game.$http.get('/rest/sprites/' + this.game.name + '/exists').then((isGraphicOrTextGame) => {
+        this.isGraphicOrTextGame = isGraphicOrTextGame.data
+      })
     })
-    this.game.$http.get('/rest/sprites/' + this.game.name + '/exists').then((isGraphicOrTextGame) => {
-      this.isGraphicOrTextGame = isGraphicOrTextGame.data
-    })
-
     this.loadData()
-
     /*
     loadPlayers(function (players) {
-     initBoards(game.players, game.allPlayersScreen, game.gameName, game.playerName, game.contextPath);
-
      if (game.isGraphicOrTextGame) {
        initCanvases(game.contextPath, game.players, game.allPlayersScreen,
        game.singleBoardGame, game.boardSize,
@@ -118,7 +112,6 @@ export default class Board {
           this.plotsUrls[color] = this.game.contextPath + '/resources/sprite/' + this.game.name + '/' + subFolder + color + '.png'
           console.log(this.plotsUrls[color])
         }
-        // buildHtml(players);
         // buildCanvases(players);
         // $('body').on('board-updated', function(events, data) {
         //   if (!reloading) {
@@ -170,10 +163,6 @@ function initCanvases(contextPath, players, allPlayersScreen,
   loadCanvasesData();
   var reloading = false;
 
-  function goToHomePage() {
-    window.location.href = contextPath;
-  }
-
   function reloadCanvasesData() {
     reloading = true;
 
@@ -195,15 +184,11 @@ function initCanvases(contextPath, players, allPlayersScreen,
 
       players = newPlayers;
 
-      removeHtml(remove);
-      removeCanvases(remove);
+      removeCanvases(remove); - удаляем канвас игроков которых нет
 
       buildHtml(create);
       buildCanvases(create);
 
-      if (players.length == 0) {
-        goToHomePage();
-      }
       reloading = false;
     });
   }
@@ -228,12 +213,6 @@ function initCanvases(contextPath, players, allPlayersScreen,
           }
         });
       });
-    });
-  }
-
-  function removeHtml(playersList) {
-    playersList.forEach(function (player) {
-      $('#div_' + toId(player.name)).remove();
     });
   }
 
@@ -277,10 +256,6 @@ function initCanvases(contextPath, players, allPlayersScreen,
       }
     }
     return false;
-  }
-
-  var getNameFromEmail = function(email) {
-    return Utils.getNameFromEmail(email)
   }
 
   var getBoardDrawer = function(canvas, playerName, playerData, allPlayersScreen) {

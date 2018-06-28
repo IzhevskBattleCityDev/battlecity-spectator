@@ -8,7 +8,6 @@ export default class BoardsConnector {
 
   constructor (link, playerName) {
     this.playerName = (playerName == null) ? 'anonymous' : playerName
-    // this.link = server + '/screen-ws?user=' + this.playerName
     this.link = link + '/screen-ws?user=' + this.playerName
   }
 

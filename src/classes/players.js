@@ -9,6 +9,7 @@ export default class Players {
     this.game = game
     this.game.$http.get('/rest/game/' + this.game.name + '/players').then((response) => {
       this.players = response.data
+      window.$events.$emit('update:players', this.players)
     })
   }
 

@@ -1,11 +1,12 @@
 /**
  * Created by Denis_Pankratov on 2/24/2018.
  */
-import Board from '@/components/classes/board.js'
+import Board from '@/classes/board.js'
 
 export default class Game {
   // name = null
   playerName = null
+  link = null
   code = null
   allPlayersScreen = false
   /*
@@ -13,7 +14,6 @@ export default class Game {
   var boardSize = 0
   var registered = false
   var singleBoardGame = null
-
   var enableDonate = false
   var enableJoystick = false
   var enableAlways = false
@@ -27,7 +27,6 @@ export default class Game {
   var showBody = true
   var sprites = null
   var heroInfo= null
-
   var board = null
   var config = {}
   */
@@ -39,6 +38,10 @@ export default class Game {
     this.$http = $http
     this.$http.get('/rest/context').then((response) => {
       this.contextPath = response.data
+    })
+    this.$http.get('/board/game/' + this.name).then((info) => {
+      this.link = info.request.responseURL
+      this.playerName = this.link.substring(this.link.indexOf('/board/player') + 14)
     })
     this.board = new Board(this)
   }
@@ -57,22 +60,5 @@ export default class Game {
 
   get RESTLink () {
     return this.config.baseURL
-  }
-
-  getSettings (name) {
-    /*
-    var value = $('#settings').attr(name)
-
-    if (typeof(value) === 'undefined') {
-      return null
-    }
-    if (value === '') {
-      return null
-    }
-    if (value === 'true' || value === 'false') {
-      return (value === 'true')
-    }
-    */
-    return null
   }
 }

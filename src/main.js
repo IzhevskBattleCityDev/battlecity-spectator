@@ -6,7 +6,7 @@ import 'vuetify/dist/vuetify.min.css'
 import axios from 'axios'
 import App from './App'
 import router from './router'
-import Game from '@/components/classes/game.js'
+import Game from '@/classes/game.js'
 Vue.use(Vuetify)
 Vue.config.productionTip = false
 
@@ -15,8 +15,8 @@ const config = {
   // baseWS: 'ws://epruizhw0172.moscow.epam.com:8080/codenjoy-contest',
   // baseURL: 'http://localhost:8080/codenjoy-contest',
   // baseWS: 'ws://localhost:8080/codenjoy-contest',
-  baseURL: 'http://epruizhsa0001t2:8080/codenjoy-contest',
-  baseWS: 'ws://epruizhsa0001t2:8080/codenjoy-contest',
+  baseURL: 'http://10.27.11.34:8080/codenjoy-contest',
+  baseWS: 'ws://10.27.11.34:8080/codenjoy-contest',
   contextPath: 'codenjoy-contest',
   timeout: 30000,
   name: 'bomberman'
