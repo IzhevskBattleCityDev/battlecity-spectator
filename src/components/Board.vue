@@ -1,11 +1,13 @@
 <template>
-  <canvas id="screen" ref="screen" v-on:mousedown="handleMouseDown" v-on:mouseup="handleMouseUp" v-on:mousemove="handleMouseMove" width="800px" height="800px"></canvas>
+  <canvas :id="id" ref="screen" v-on:mousedown="handleMouseDown" v-on:mouseup="handleMouseUp" v-on:mousemove="handleMouseMove"></canvas>
 </template>
 
 <script>
   export default {
+    props: ['id'],
     data: function () {
       return {
+        boards: [],
         mouse: {
           current: {
             x: 0,
@@ -34,13 +36,11 @@
       }
     },
     mounted: function () {
-      this.$events.$on('screen-update', (params) => {
-        console.log(params)
-        console.log(this)
-      })
+      //
     },
     created: function () {
-      this.loadImages()
+      // this.$event.$on('board:build', this.build)
+      // this.loadImages()
     },
     methods: {
       calcSize: function (image) {

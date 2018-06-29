@@ -1,37 +1,17 @@
 /**
  * Created by Denis_Pankratov on 2/24/2018.
  */
-import Board from '@/classes/board.js'
+import Boards from '@/classes/boards'
+import Players from '@/classes/players'
 
 export default class Game {
-  // name = null
-  playerName = null
   link = null
   code = null
   allPlayersScreen = false
-  /*
-  var contextPath = null
-  var boardSize = 0
-  var registered = false
-  var singleBoardGame = null
-  var enableDonate = false
-  var enableJoystick = false
-  var enableAlways = false
-  var enablePlayerInfo = true
-  var enablePlayerInfoLevel = true
-  var enableLeadersTable = true
-  var enableChat = false
-  var enableInfo = true
-  var enableHotkeys = true
-  var enableAdvertisement = false
-  var showBody = true
-  var sprites = null
-  var heroInfo= null
-  var board = null
-  var config = {}
-  */
 
-  _board = null
+  _boards = null
+  _currentPlayer = null
+  _players = null
 
   constructor (config, $http) {
     this.config = config
@@ -41,13 +21,23 @@ export default class Game {
     })
     this.$http.get('/board/game/' + this.name).then((info) => {
       this.link = info.request.responseURL
-      this.playerName = this.link.substring(this.link.indexOf('/board/player') + 14)
+      let playerName = this.link.substring(this.link.indexOf('/board/player') + 14)
+      this._currentPlayer = playerName
+      this._boards = new Boards(this)
+      this._players = new Players(this)
     })
-    this._board = new Board(this)
   }
 
-  get board () {
-    return this._board
+  get currentPlayer () {
+    return this._currentPlayer
+  }
+
+  get players () {
+    return this._players
+  }
+
+  get boards () {
+    return this._boards
   }
 
   get name () {

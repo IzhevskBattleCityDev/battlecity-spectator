@@ -24,15 +24,14 @@ const config = {
   name: 'bomberman'
 }
 
+window.$events = Vue.$events = Vue.prototype.$events = new Vue()
 // Setting up Axios on Vue Instance, for use via this.$axios
 window.$http = Vue.$http = Vue.prototype.$http = axios.create(config)
 // Default vars set up from localStorage (ie, user has come back)
 // Vue.prototype.$axios.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem('id_token')}`;
 // Vue.prototype.$axios.defaults.headers.common['Access-Token'] = localStorage.getItem('auth_token');
 /* eslint-disable no-new */
-
 window.$game = Vue.$game = Vue.prototype.$game = new Game(config, axios.create(config))
-window.$events = Vue.$events = Vue.prototype.$events = new Vue()
 
 new Vue({
   el: '#app',

@@ -1,26 +1,52 @@
 /**
  * Created by Denis_Pankratov on 2/24/2018.
  */
+import helpers from '@/classes/helpers'
+import Player from '@/classes/player'
+
 export default class Players {
   players = []
   game = null
 
   constructor (game) {
     this.game = game
-
-    this.game.$http.get('/rest/game/' + this.game.name + '/players').then((response) => {
-      this.players = response.data
-      window.$events.$emit('players:update', this.players)
-      window.$events.$on('players:change', this.setPlayer)
+    window.$events.$on('players:update', this.update)
+    /* нельзя использовать, так как сервис возвращает код доступов до управления игроками */
+    this.game.$http.get('/rest/game/' + this.game.name + '/players').then((players) => {
+      console.log(players.data)
+      if (!game.boards.allPlayersScreen && game.boards.enablePlayerInfoLevel) {
+        players.data.forEach(element => {
+          let name = helpers.getNameFromEmail(element.name)
+          this.players.push(new Player({
+            id: helpers.toIdFromEmail(element.name),
+            title: name,
+            name: name,
+            email: element.name,
+            score: element.score
+          }))
+        })
+      }
     })
+  }
+
+  update (scores) {
+    this.players = []
+    window.$game.players.players.forEach(element => {
+      if (scores[element.email] > 0) {
+        this.players.push(new Player({
+          id: element.id,
+          title: element.name,
+          name: element.name,
+          email: element.email,
+          score: scores[element.email]
+        }))
+      }
+    })
+    window.$events.$emit('players:view', this.players)
   }
 
   get list () {
     return this.players
-  }
-
-  setPlayer (title) {
-    this.$root.$game.board.playerName = title
   }
   /*
   load() {
@@ -83,10 +109,6 @@ export default class Players {
     this.game.$http.get('/rest/player/' + playerName + '/check/' + code, function (registered) {
       this.game.registered = registered
     })
-  }
-
-  toId (email) {
-    return email.replace(/[@.]/gi, '_')
   }
 
 /*

@@ -1,38 +1,43 @@
 /**
  * Created by Denis_Pankratov on 2/24/2018.
  */
-import Players from '@/classes/players.js'
 import BoardsConnector from '@/classes/boardsConnector.js'
 
-export default class Board {
+export default class Boards {
   game = null
   singleBoardGame = true
-  boardSize = 0
   isGraphicOrTextGame = true
+  allPlayersScreen = false
+  enablePlayerInfoLevel = true
+
+  boardSize = 0
   link = null
   players = null
-  _playerName = 'anonymous'
   plots = {}
-  plotsUrls = {}
+  _plotsUrls = {}
+  _images = []
   screen = {}
+  loaded = false
 
   constructor (game) {
     this.game = game
-
+    this._playerName = this.game.currentPlayer
     this.connection = new BoardsConnector(this.game.WSLink, this._playerName)
-
     this.connection.run(this.onOpen, this.onMessage)
-    this.players = new Players(this.game)
-
-    this.game.$http.get('/rest/game/' + this.game.name + '/type').then((playerGameInfo) => {
-      this.singleBoardGame = playerGameInfo.data.singleBoard
-      this.boardSize = playerGameInfo.data.boardSize
-    }).then(() => {
-      this.game.$http.get('/rest/sprites/' + this.game.name + '/exists').then((isGraphicOrTextGame) => {
-        this.isGraphicOrTextGame = isGraphicOrTextGame.data
+    this.game.$http.get('/rest/game/' + this.game.name + '/type')
+      .then((playerGameInfo) => {
+        this.singleBoardGame = playerGameInfo.data.singleBoard
+        this.boardSize = playerGameInfo.data.boardSize
+      }).then(() => {
+        this.game.$http.get('/rest/sprites/' + this.game.name + '/exists').then((isGraphicOrTextGame) => {
+          this.isGraphicOrTextGame = isGraphicOrTextGame.data
+        }).then(() => {
+          this.loadSprites().then(() => {
+            this.loadImages()
+            this.loaded = true
+          })
+        })
       })
-    })
-    this.loadData()
     /*
     loadPlayers(function (players) {
      if (game.isGraphicOrTextGame) {
@@ -89,74 +94,67 @@ export default class Board {
     */
   }
 
-  set playerName (name) {
-    this._playerName = name
-  }
-
-  get playerName () {
-    return this._playerName
-  }
-
   onOpen () {
-    window.$game.board.update()
+    window.$game.boards.update()
   }
 
   onMessage (data) {
-    window.$game.board.update()
-    window.$events.$emit('screen-update', JSON.parse(data))
+    window.$game.boards.update()
+    if (window.$game.boards.loaded) {
+      let _data = JSON.parse(data)
+      window.$events.$emit('boards:update', _data)
+      window.$events.$emit('players:update', _data[window.$game.currentPlayer].scores)
+    }
   }
 
-  loadData () {
+  loadSprites () {
     let sprites = ''
-    this.game.$http.get('/rest/sprites/alphabet').then((response) => {
+    let _ = this
+    return this.game.$http.get('/rest/sprites/alphabet').then((response) => {
       var alphabet = response.data
-      this.game.$http.get('/rest/sprites/' + this.game.name).then((response) => {
+      _.game.$http.get('/rest/sprites/' + _.game.name).then((response) => {
         var elements = response.data
         for (var index in elements) {
           var char = alphabet[index]
           var color = elements[index]
-          this.plots[char] = color
+          _.plots[char] = color
           let subFolder = (!sprites) ? sprites + '/' : ''
-          this.plotsUrls[color] = this.game.contextPath + '/resources/sprite/' + this.game.name + '/' + subFolder + color + '.png'
-          console.log(this.plotsUrls[color])
+          _._plotsUrls[color] = _.game.contextPath + '/resources/sprite/' + _.game.name + '/' + subFolder + color + '.png'
         }
-        // buildCanvases(players);
-        // $('body').on('board-updated', function(events, data) {
-        //   if (!reloading) {
-        //     drawUsersCanvas(data);
-        //   }
-        // });
       })
     })
   }
 
+  loadImages () {
+    let _ = this
+    let firstSprite = null
+    for (var color in this._plotsUrls) {
+      var image = new Image()
+      image.onload = function () {
+        if (this === firstSprite) {
+          _.calcSize(this)
+        }
+      }
+      image.src = this._plotsUrls[color]
+      this._images[color] = image
+      if (!firstSprite) {
+        firstSprite = image
+      }
+    }
+  }
+
   update (screen) {
     this.screen = screen
-    this.redraw()
-
     if (this.connection == null) {
       return
     }
-
-    /*
-    var playerNames = []
-    for (var index in this.players) {
-      var playerName = this.players[index].name
-      playerNames.push(playerName)
-    }
-    */
-
     var request = {
       'name': 'getScreen',
-      'allPlayersScreen': false,
+      'allPlayersScreen': this.allPlayersScreen,
       'players': [this._playerName],
       'gameName': this.game.name
     }
     this.connection.send(JSON.stringify(request))
-  }
-
-  redraw () {
-    //
   }
 }
 

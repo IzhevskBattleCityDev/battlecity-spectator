@@ -29,18 +29,18 @@
 <script>
   export default {
     created () {
-      window.$events.$on('players:update', this.update)
+      window.$events.$on('players:view', this.update)
     },
     methods: {
       update: function (players) {
+        this.items = []
+        console.log(players)
         players.forEach(element => {
-          if (!this.allPlayersScreen && this.enablePlayerInfoLevel) {
-            this.items.push({
-              title: element.name.split('@')[0],
-              subtitle: "<span class='text--primary'>" + element.score + '</span> ',
-              name: element.name
-            })
-          }
+          this.items.push({
+            title: element.name,
+            subtitle: "<span class='text--primary'>" + element.score + '</span> ',
+            name: element.name
+          })
         })
       },
       changePlayer: function (title) {
