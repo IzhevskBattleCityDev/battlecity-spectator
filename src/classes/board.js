@@ -11,7 +11,7 @@ export default class Board {
   isGraphicOrTextGame = true
   link = null
   players = null
-  playerName = 'anonymous'
+  _playerName = 'anonymous'
   plots = {}
   plotsUrls = {}
   screen = {}
@@ -19,7 +19,7 @@ export default class Board {
   constructor (game) {
     this.game = game
 
-    this.connection = new BoardsConnector(this.game.WSLink, this.playerName)
+    this.connection = new BoardsConnector(this.game.WSLink, this._playerName)
 
     this.connection.run(this.onOpen, this.onMessage)
     this.players = new Players(this.game)
@@ -89,6 +89,14 @@ export default class Board {
     */
   }
 
+  set playerName (name) {
+    this._playerName = name
+  }
+
+  get playerName () {
+    return this._playerName
+  }
+
   onOpen () {
     window.$game.board.update()
   }
@@ -130,15 +138,18 @@ export default class Board {
       return
     }
 
+    /*
     var playerNames = []
     for (var index in this.players) {
       var playerName = this.players[index].name
       playerNames.push(playerName)
     }
+    */
+
     var request = {
       'name': 'getScreen',
       'allPlayersScreen': false,
-      'players': [this.playerName],
+      'players': [this._playerName],
       'gameName': this.game.name
     }
     this.connection.send(JSON.stringify(request))

@@ -12,7 +12,7 @@
           <template v-for="(item, index) in items">
             <v-subheader v-if="item.header" :key="item.header">{{ item.header }}</v-subheader>
             <v-divider v-else-if="item.divider" :inset="item.inset" :key="index"></v-divider>
-            <v-list-tile v-else :key="item.title" avatar @click="">
+            <v-list-tile v-else :key="item.title" avatar @click="changePlayer(item.title)">
               <v-list-tile-avatar v-if="item.avatar">
                 <img :src="item.avatar">
               </v-list-tile-avatar>
@@ -29,7 +29,7 @@
 <script>
   export default {
     created () {
-      window.$events.$on('update:players', this.update)
+      window.$events.$on('players:update', this.update)
     },
     methods: {
       update: function (players) {
@@ -37,10 +37,15 @@
           if (!this.allPlayersScreen && this.enablePlayerInfoLevel) {
             this.items.push({
               title: element.name.split('@')[0],
-              subtitle: "<span class='text--primary'>" + element.score + '</span> '
+              subtitle: "<span class='text--primary'>" + element.score + '</span> ',
+              name: element.name
             })
           }
         })
+      },
+      changePlayer: function (title) {
+        var _item = this.items.find(element => element.title === title)
+        window.$events.$emit('players:change', _item.name)
       }
     },
     data () {

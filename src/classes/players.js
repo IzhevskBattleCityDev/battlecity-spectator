@@ -7,14 +7,20 @@ export default class Players {
 
   constructor (game) {
     this.game = game
+
     this.game.$http.get('/rest/game/' + this.game.name + '/players').then((response) => {
       this.players = response.data
-      window.$events.$emit('update:players', this.players)
+      window.$events.$emit('players:update', this.players)
+      window.$events.$on('players:change', this.setPlayer)
     })
   }
 
   get list () {
     return this.players
+  }
+
+  setPlayer (title) {
+    this.$root.$game.board.playerName = title
   }
   /*
   load() {

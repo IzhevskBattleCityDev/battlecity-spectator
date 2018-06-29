@@ -31,7 +31,7 @@ export default class Game {
   var config = {}
   */
 
-  board = null
+  _board = null
 
   constructor (config, $http) {
     this.config = config
@@ -43,11 +43,11 @@ export default class Game {
       this.link = info.request.responseURL
       this.playerName = this.link.substring(this.link.indexOf('/board/player') + 14)
     })
-    this.board = new Board(this)
+    this._board = new Board(this)
   }
 
-  board () {
-    return this.board
+  get board () {
+    return this._board
   }
 
   get name () {
