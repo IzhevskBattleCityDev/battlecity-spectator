@@ -9,6 +9,9 @@ class Helpers {
   toIdFromEmail (email) {
     return email.replace(/[@.]/gi, '_')
   }
+  getIdfromEmail (email) {
+    return email.replace(/[@.]/gi, '_')
+  }
 }
 
 export default new Helpers()

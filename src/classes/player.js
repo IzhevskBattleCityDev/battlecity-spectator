@@ -10,5 +10,6 @@ export default class Player {
     this.name = info.name
     this.email = info.email
     this.nick = info.nick
+    this.score = info.score
   }
 }

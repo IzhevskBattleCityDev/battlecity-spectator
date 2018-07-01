@@ -39,7 +39,8 @@
           this.items.push({
             title: element.name,
             subtitle: "<span class='text--primary'>" + element.score + '</span> ',
-            name: element.name
+            name: element.name,
+            score: element.score
           })
         })
       },

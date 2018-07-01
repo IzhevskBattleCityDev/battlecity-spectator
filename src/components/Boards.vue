@@ -1,7 +1,7 @@
 <template>
-<v-layout>
+<v-layout fluent>
   <v-card v-for="board in boards" :key="board.id">
-    <board :id="board.id"/>
+    <board :id="board.id" :data="board"/>
   </v-card>
 </v-layout>
 </template>
@@ -15,13 +15,13 @@
       }
     },
     mounted: function () {
-      this.$events.$on('boards:update', (params) => {
-        console.log(params)
+      this.$events.$on('boards-view:update', (boardsList) => {
+        this.boards = []
+        console.log(boardsList)
         console.log(this)
+        this.boards = boardsList
+        this.$events.$emit('board:update')
       })
-    },
-    created: function () {
-
     },
     components: {
       board
