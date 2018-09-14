@@ -13,7 +13,6 @@ export default class Players {
     window.$events.$on('players:update', this.update)
     /* нельзя использовать, так как сервис возвращает код доступов до управления игроками */
     this.game.$http.get('/rest/game/' + this.game.name + '/players').then((players) => {
-      console.log(players.data)
       if (!game.boards.allPlayersScreen && game.boards.enablePlayerInfoLevel) {
         players.data.forEach(element => {
           let name = helpers.getNameFromEmail(element.name)
@@ -22,13 +21,15 @@ export default class Players {
             title: name,
             name: name,
             email: element.name,
-            score: element.score
+            score: element.score,
+            life: element.life,
+            ammo: element.ammo
           }))
         })
       }
     })
   }
-  update (scores) {
+  update (scores, heroesData) {
     this.players = []
     window.$game.players.players.forEach(element => {
       if (scores[element.email] >= 0) {
@@ -37,7 +38,9 @@ export default class Players {
           title: element.name,
           name: element.name,
           email: element.email,
-          score: scores[element.email]
+          score: scores[element.email],
+          life: heroesData[element.email].additionalData.life,
+          ammo: heroesData[element.email].additionalData.ammo
         }))
       }
     })

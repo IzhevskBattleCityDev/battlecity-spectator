@@ -17,8 +17,8 @@
     mounted: function () {
       this.$events.$on('boards-view:update', (boardsList) => {
         this.boards = []
-        console.log(boardsList)
-        console.log(this)
+        // console.log(boardsList)
+        // console.log(this)
         this.boards = boardsList
         this.$events.$emit('board:update')
       })

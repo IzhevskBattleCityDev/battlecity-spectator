@@ -38,7 +38,7 @@ export default class BoardsConnector {
   }
 
   send (msg) {
-    console.log('[INFO] Board sent message to server: ' + msg)
+    // console.log('[INFO] Board sent message to server: ' + msg)
     this.socket.send(msg)
   }
 }

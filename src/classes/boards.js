@@ -69,7 +69,9 @@ export default class Boards {
       /* eslint-enable */
     }
     if (window.$game.boards.loaded) {
-      window.$events.$emit('players:update', _data[window.$game.currentPlayer].scores)
+      console.log(_data[window.$game.currentPlayer])
+      window.$events.$emit('players:update', _data[window.$game.currentPlayer].scores,
+        Helpers.normalizeHeroesData(_data[window.$game.currentPlayer].heroesData))
     }
   }
 

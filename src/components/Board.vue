@@ -85,8 +85,8 @@
               if (!isDrawByOrder || plotIndex === color) {
                 this.drawPlot(this._decode(color), x, y)
                 if (color === 'A') {
-                  console.log('Bomberman:', x, y)
-                  console.log('Screen:', layers === this.screen)
+                  // console.log('Bomberman:', x, y)
+                  // console.log('Screen:', layers === this.screen)
                 }
                 if (typeof onDrawItem === 'function') {
                   this.onDrawItem(layers, layerIndex, charIndex, x, y)
@@ -166,7 +166,7 @@
               font: font
             }
             if (typeof beforeDraw === 'function') data = beforeDraw(data)
-            this.drawText(data.name, data.point, data.font, isHero === true ? '#FFFB00' : null)
+            this.drawText(data.name + Helpers.getAdditionalPlayerDataToRender(heroData), data.point, data.font, isHero === true ? '#FFFB00' : null)
           }
           var board = this.data.data
           let playerName = this.currentPlayer

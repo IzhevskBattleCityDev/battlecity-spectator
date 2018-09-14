@@ -34,19 +34,39 @@
     methods: {
       update: function (players) {
         this.items = []
-        console.log(players)
-        players.forEach(element => {
-          this.items.push({
-            title: element.name,
-            subtitle: "<span class='text--primary'>" + element.score + '</span> ',
-            name: element.name,
-            score: element.score
+        // console.log(players)
+        let sortedPlayers = this.getSortedPlayersByScore(players)
+        sortedPlayers
+          .forEach(element => {
+            this.items.push({
+              title: element.name,
+              subtitle: this.renderSubtitle(element),
+              name: element.name,
+              score: element.score
+            })
           })
-        })
+      },
+      renderSubtitle: function (element) {
+        return "<span class='text--primary'>" +
+               'Score: <b>' + element.score + '</b> ' +
+               'Life: <b>' + element.life + '</b> ' +
+               'Ammo: <b>' + element.ammo + '</b>' +
+               '</span> '
       },
       changePlayer: function (title) {
         var _item = this.items.find(element => element.title === title)
         window.$events.$emit('players:change', _item.name)
+      },
+      getSortedPlayersByScore: function (players) {
+        return players.sort(function (p1, p2) {
+          if (p1.score < p2.score) {
+            return -1
+          }
+          if (p1.score > p2.score) {
+            return 1
+          }
+          return 0
+        }).reverse()
       }
     },
     data () {

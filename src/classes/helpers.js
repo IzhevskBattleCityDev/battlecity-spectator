@@ -12,6 +12,17 @@ class Helpers {
   getIdfromEmail (email) {
     return email.replace(/[@.]/gi, '_')
   }
+  getAdditionalPlayerDataToRender (heroData) {
+    let data = heroData.additionalData
+    return '(' + data.life + '_' + data.ammo + ')'
+  }
+  normalizeHeroesData (heroesData) {
+    var result = {}
+    for (var name in heroesData) {
+      result[name] = heroesData[name][name]
+    }
+    return result
+  }
 }
 
 export default new Helpers()

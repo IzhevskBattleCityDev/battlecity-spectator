@@ -10,6 +10,8 @@ import Game from '@/classes/game.js'
 Vue.use(Vuetify)
 Vue.config.productionTip = false
 
+const serverURL = 'localhost:8080'
+
 const config = {
   // baseURL: 'http://epruizhw0172.moscow.epam.com:8080/codenjoy-contest',
   // baseWS: 'ws://epruizhw0172.moscow.epam.com:8080/codenjoy-contest',
@@ -17,11 +19,11 @@ const config = {
   // baseWS: 'ws://localhost:8080/codenjoy-contest',
   // baseURL: 'http://10.27.11.34:8080/codenjoy-contest',
   // baseWS: 'ws://10.27.11.34:8080/codenjoy-contest',
-  baseURL: 'http://212.158.174.142:8080/codenjoy-contest',
-  baseWS: 'ws://212.158.174.142:8080/codenjoy-contest',
+  baseURL: 'http://' + serverURL + '/codenjoy-contest',
+  baseWS: 'ws://' + serverURL + '/codenjoy-contest',
   contextPath: 'codenjoy-contest',
   timeout: 30000,
-  name: 'bomberman'
+  name: 'battlecity'
 }
 
 window.$events = Vue.$events = Vue.prototype.$events = new Vue()
